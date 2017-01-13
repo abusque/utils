@@ -1,0 +1,60 @@
+#!/bin/sh
+
+BRIGHTNESS_DIR=/sys/class/backlight/intel_backlight
+
+MIN_BRIGHTNESS=0
+MAX_BRIGHTNESS=$(cat $BRIGHTNESS_DIR/max_brightness)
+CUR_BRIGHTNESS=$(cat $BRIGHTNESS_DIR/brightness)
+PCT_BRIGHTNESS=$(echo "$MAX_BRIGHTNESS / 100" | bc)
+
+usage () {
+    NAME=$(basename $0)
+    echo "usage: $NAME [--inc percent] [--dec percent]"
+    exit 1
+}
+
+inc () {
+    NEW_BRIGHTNESS=$(echo "$CUR_BRIGHTNESS + $PCT_BRIGHTNESS * $1" | bc | xargs printf '%.*f' 0)
+    if [ $NEW_BRIGHTNESS -gt $MAX_BRIGHTNESS ]; then
+        NEW_BRIGHTNESS=$MAX_BRIGHTNESS
+    fi;
+
+    echo $NEW_BRIGHTNESS > $BRIGHTNESS_DIR/brightness
+}
+
+dec () {
+    NEW_BRIGHTNESS=$(echo "$CUR_BRIGHTNESS - $PCT_BRIGHTNESS * $1" | bc | xargs printf '%.*f' 0)
+    if [ $NEW_BRIGHTNESS -lt $MIN_BRIGHTNESS ]; then
+        NEW_BRIGHTNESS=$MIN_BRIGHTNESS
+    fi;
+
+    echo $NEW_BRIGHTNESS > $BRIGHTNESS_DIR/brightness
+}
+
+if [ $# -ne 2 ]; then
+    usage
+fi
+
+case $2 in
+    *[!0-9]*)
+        echo "Invalid percentage value: $2"
+        usage
+        ;;
+    *)
+        ;;
+esac
+
+case $1 in
+    --inc)
+        inc $2
+        ;;
+    --dec)
+        dec $2
+        ;;
+    *)
+        echo "Invalid option: $1"
+        usage
+        ;;
+esac
+
+exit 0
