@@ -5,7 +5,7 @@ BRIGHTNESS_DIR=/sys/class/backlight/intel_backlight
 MIN_BRIGHTNESS=0
 MAX_BRIGHTNESS=$(cat $BRIGHTNESS_DIR/max_brightness)
 CUR_BRIGHTNESS=$(cat $BRIGHTNESS_DIR/brightness)
-PCT_BRIGHTNESS=$(echo "$MAX_BRIGHTNESS / 100" | bc)
+PCT_BRIGHTNESS=$(echo "$MAX_BRIGHTNESS / 100" | bc -l)
 
 usage () {
     NAME=$(basename $0)
