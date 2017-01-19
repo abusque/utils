@@ -24,7 +24,7 @@ inc () {
 
 dec () {
     new_brightness=$(echo "$CUR_BRIGHTNESS - $PCT_BRIGHTNESS * $1" | bc | xargs printf '%.*f' 0)
-    if [ $new_brightness -lt $MIN_BRIGHTNESS ]; then
+    if [ $new_brightness -le $MIN_BRIGHTNESS ]; then
         new_brightness=$MIN_BRIGHTNESS
     fi
 
