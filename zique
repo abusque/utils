@@ -1,0 +1,41 @@
+#!/bin/sh
+
+REMOTE=shell.abusque.com:/home/abusque/media/music
+MOUNT_POINT=/home/abusque/media/music
+
+usage () {
+    name=$(basename $0)
+    echo "usage: $name [mount | umount]"
+    exit 1
+}
+
+zique_mount () {
+    sshfs "$REMOTE" "$MOUNT_POINT"
+}
+
+zique_umount () {
+    fusermount -u "$MOUNT_POINT"
+}
+
+if [ $# -gt 1 ]; then
+    usage
+fi
+
+if [ $# -eq 0 ]; then
+    zique_mount
+else
+    case $1 in
+        mount)
+            zique_mount
+            ;;
+        umount)
+            zique_umount
+            ;;
+        *)
+            echo "Invalid option: $1"
+            usage
+            ;;
+    esac
+fi
+
+exit 0
