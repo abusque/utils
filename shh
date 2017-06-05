@@ -1,0 +1,22 @@
+#!/bin/sh
+
+shh_start () {
+    play -n synth brownnoise gain -8 > /dev/null 2>&1 &
+}
+
+shh_stop () {
+    kill $1
+}
+
+shh_toggle () {
+    pid=$(pgrep play)
+    if [ $? -ne 0 ]; then
+        shh_start
+    else
+        shh_stop $pid
+    fi
+}
+
+shh_toggle
+
+exit 0
