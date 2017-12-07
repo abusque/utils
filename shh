@@ -4,17 +4,17 @@ PIDFILE=/tmp/shh.pid
 
 shh_start () {
     play -n synth brownnoise gain -8 > /dev/null 2>&1 &
-    echo $! > $PIDFILE
+    echo $! > "$PIDFILE"
 }
 
 shh_stop () {
-    pid=$(cat $PIDFILE)
+    pid=$(cat "$PIDFILE")
     kill $pid
-    rm $PIDFILE
+    rm "$PIDFILE"
 }
 
 shh_toggle () {
-    if [ ! -f $PIDFILE ]; then
+    if [ ! -f "$PIDFILE" ]; then
         shh_start
     else
         shh_stop
